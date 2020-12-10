@@ -29,6 +29,7 @@ public class Agenda {
      * @param day the day toi test
      * @return and iteraror to the events that occur on that day
      */
+    
     public List<Event> eventsInDay(LocalDate day) {
         List<Event> eventsOfTheDay = new LinkedList();
         for (int i=0; i<listeEvents.size();i++){            
@@ -42,5 +43,36 @@ public class Agenda {
           }*/
         }
         return eventsOfTheDay;
+    }
+    
+        /**
+     * Trouver les événements de l'agenda en fonction de leur titre
+     * @param title le titre à rechercher
+     * @return les événements qui ont le même titre
+     */
+    public List<Event> findByTitle(String title) {
+        List<Event> eventsWithThisTitle = new LinkedList();
+        for(Event e : listeEvents){
+            if(e.getTitle().equals(title)){
+                eventsWithThisTitle.add(e);
+            }
+        }
+        return eventsWithThisTitle;
+    }
+    
+    /**
+     * Déterminer s’il y a de la place dans l'agenda pour un événement
+     * @param e L'événement à tester (on se limitera aux événements simples)
+     * @return vrai s’il y a de la place dans l'agenda pour cet événement
+     */
+    public boolean isFreeFor(Event e) {
+        LocalDateTime end = e.getStart().plus(e.getDuration());
+        LocalDateTime start = e.getStart();
+        for(Event eventInList : listeEvents){
+            LocalDateTime endInList = eventInList.getStart().plus(eventInList.getDuration());
+            //Si le début OU la fin de "e" est entre le début ET la fin d'un événement dans la liste, alors ça se chevauche
+            return !((start.isAfter(eventInList.getStart()) && start.isBefore(endInList)) || (end.isAfter(eventInList.getStart())&& end.isBefore(endInList)));
+        }
+        throw new UnsupportedOperationException("Pas encore implémenté");        
     }
 }

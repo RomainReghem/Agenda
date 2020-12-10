@@ -20,6 +20,12 @@ public class AgendaTest {
 
     // November 1st, 2020, 22:30
     LocalDateTime nov_1__2020_22_30 = LocalDateTime.of(2020, 11, 1, 22, 30);
+    
+    // November 1st, 2020, 23:30
+    LocalDateTime nov_1__2020_23_30 = LocalDateTime.of(2020, 11, 1, 23, 30);
+    
+    // November 8st, 2020, 23:30
+    LocalDateTime nov_8__2020_23_30 = LocalDateTime.of(2020, 11, 8, 23, 30);
 
     // 120 minutes
     Duration min_120 = Duration.ofMinutes(120);
@@ -37,6 +43,10 @@ public class AgendaTest {
     // A daily repetitive event, never ending
     // November 1st, 2020, 22:30, 120 minutes
     RepetitiveEvent neverEnding = new RepetitiveEvent("Never Ending", nov_1__2020_22_30, min_120, ChronoUnit.DAYS);
+    
+    Event auMemeMoment = new Event("Au même moment qu'un autre", nov_1__2020_23_30, min_120);
+    
+    Event aUnAutreMoment = new Event("A un autre moment", nov_8__2020_23_30, min_120 );
 
     @BeforeEach
     public void setUp() {
@@ -53,8 +63,18 @@ public class AgendaTest {
         assertTrue(agenda.eventsInDay(nov_1_2020).contains(neverEnding));
     }
     
-    public void testEventWithA(){
-        
+    @Test
+    public void testFindByTitle(){
+        assertEquals(2, agenda.findByTitle("Fixed termination weekly").size());
+        assertEquals(1, agenda.findByTitle("Never Ending").size());
+        assertTrue(agenda.findByTitle("Never Ending").contains(neverEnding));
+        assertEquals(0, agenda.findByTitle("Titre qui n'existe pas").size());
+    }
+    
+    @Test
+    public void testIsFreeFor(){
+        assertFalse(agenda.isFreeFor(auMemeMoment), "Il y a déjà un évément à ce moment");
+        assertTrue(agenda.isFreeFor(aUnAutreMoment), "Il n'y a pas d'autres événements à ce moment");
     }
 
 
